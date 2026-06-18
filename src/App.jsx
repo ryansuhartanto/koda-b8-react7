@@ -3,12 +3,11 @@ import Check from "~icons/lucide/check";
 import Plus from "~icons/lucide/plus";
 import Trash from "~icons/lucide/trash";
 
+import { useTodoData } from "#/hooks/data";
 import { cn } from "#/lib/utils";
 
 // oxlint-disable-next-line no-unassigned-import
 import "#/style.css";
-
-const data = [{ done: false, content: "Test" }];
 
 /**
  * @param {object}
@@ -103,7 +102,7 @@ function TodoCard({
 }
 
 export default function Layout() {
-	const [todos, setTodos] = React.useState(data);
+	const [todos, , appendTodo, editTodo, deleteTodo] = useTodoData();
 	const newTodoRef = React.useRef(null);
 	const isAdding = React.useRef(false);
 
@@ -116,17 +115,11 @@ export default function Layout() {
 
 	function addTodo() {
 		isAdding.current = true;
-		setTodos((prev) => [...prev, { done: false, content: "" }]);
+		appendTodo({ done: false, content: "" });
 	}
 
 	function updateTodo(index, patch) {
-		setTodos((prev) =>
-			prev.map((t, i) => (i === index ? { ...t, ...patch } : t)),
-		);
-	}
-
-	function deleteTodo(index) {
-		setTodos((prev) => prev.filter((_, i) => i !== index));
+		editTodo(index, (t) => ({ ...t, ...patch }));
 	}
 
 	return (
